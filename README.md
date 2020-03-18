@@ -4,10 +4,8 @@
 This is a simple script to facilitate exporting the current AWS SSO credentials or runing a command with them. Please note that it is called `aws2-wrap` to show that it works with AWS CLI v2, even though the CLI tool is no longer called `aws2`.
 
 ## Install locally from source
-`
-git clone https://github.com/thejazzid/aws2-wrap.git && cd aws2-wrap
-python3 setup.py install
-`
+`git clone https://github.com/thejazzid/aws2-wrap.git && cd aws2-wrap`
+`python3 setup.py install`
 
 ## Install using `pip` - it install public version(no storing function)
 https://pypi.org/project/aws2-wrap
