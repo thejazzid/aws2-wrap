@@ -10,6 +10,8 @@
 # packages a dev version.
 #
 # Copyright (c) 2020 Linaro Ltd
+#
+# Added feature to record credentials in default profile by thejazzid
 
 
 import argparse
@@ -28,6 +30,7 @@ def process_arguments():
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--export", action="store_true")
     group.add_argument("--exec", action="store")
+    group.add_argument("--save_default", action="store_true")
     parser.add_argument("--profile", action="store", required=True)
     args = parser.parse_args()
     return args
@@ -117,6 +120,25 @@ def get_role_credentials(profile_name, sso_role_name, sso_account_id, sso_access
     session_token = blob["roleCredentials"]["sessionToken"]
     return access_key, secret_access_key, session_token
 
+def update_default_profile(access_key, secret_access_key, session_token):
+    """ Store credentials in ./aws/credentials for backward compatibility """
+    config_path = os.path.abspath(os.path.expanduser("~/.aws/credentials"))
+    config = configparser.ConfigParser()
+    config.read(config_path)
+    # Look for the required profile
+    #if "default" not in config:
+    #    sys.exit("Cannot find profile 'default' in ~/.aws/config")
+
+    # Form  values
+    profile = config["default"]
+    profile["aws_access_key_id"] = access_key
+    profile["aws_secret_access_key"] = secret_access_key
+    profile["aws_session_token"] = session_token
+    profile["aws_security_token"] = session_token
+
+    with open(config_path, "w") as cred_file:
+        config.write(cred_file)
+
 
 def main():
     """ Main! """
@@ -133,6 +155,8 @@ def main():
         print("export AWS_ACCESS_KEY_ID=\"%s\"" % access_key)
         print("export AWS_SECRET_ACCESS_KEY=\"%s\"" % secret_access_key)
         print("export AWS_SESSION_TOKEN=\"%s\"" % session_token)
+    elif args.save_default:
+        update_default_profile(access_key, secret_access_key, session_token)
     elif args.exec is not None:
         os.environ["AWS_ACCESS_KEY_ID"] = access_key
         os.environ["AWS_SECRET_ACCESS_KEY"] = secret_access_key

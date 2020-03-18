@@ -19,6 +19,11 @@ For example:
 
 `aws2-wrap --profile MySSOProfile --exec "terraform"`
 
+## Store credentials in ~/.aws/credentials
+
+`aws2-wrap --profile <awsprofilename> --save_default`
+
+
 ## Export the credentials
 
 There may be circumstances when it is easier/better to set the appropriate environment variables so that they can be re-used by any `aws` command.
